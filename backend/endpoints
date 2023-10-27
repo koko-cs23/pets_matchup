@@ -1,0 +1,26 @@
+Register end point
+curl -X POST -H "Content-Type: application/json" -d '{"id":"1", "full_name":"Akpotaire Dennis", "email":"dennisakpo23@gmail.com", "password":"1234","phone_number":"09023457891"}' http://127.0.0.1:5000/register
+output: {"message: ":"User created successfully."}
+
+Login endpoint
+curl -X POST -H "Content-Type: application/json" -d '{"email":"dennisakpo23@gmail.com", "password":"1234"}' http://127.0.0.1:5000/login
+output: {"message: ":"User exists"}
+
+Upload pet endpoint
+curl -X POST -H "Content-Type: application/json" -d '{"id":"1", "name":"Dog", "category":"Roff", "purebred":"Yes","age":"2", "gender": "Female", "country": "Nigeria", "state": "Lagos", "picture_uri": "wr235", "additional_details": "A lovely and healthy dog"}' http://127.0.0.1:5000/upload-pet
+output: {"message ":"Pet created successfully."}
+
+Get pets endpoint
+curl http://127.0.0.1:5000/get-pets
+output: {"pets: ":[{"additional_details":"A lovely and healthy dog","age":2,"category":"Roff","country":"Nigeria","gender":"Female","id":"1","name":"Dog","picture_uri":"wr235","purebred":"Yes","state":"Lagos"}]}
+
+Get pet by id endpoint
+curl http://127.0.0.1:5000/get-pet?id=1
+output: {"pet":{"additional_details":"A lovely and healthy dog","age":2,"category":"Roff","country":"Nigeria","gender":"Female","id":"1","name":"Dog","picture_uri":"wr235","purebred":"Yes","state":"Lagos"}}
+
+curl http://127.0.0.1:5000/get-pet?id=2
+output: {"error":"Pet doesn't exist"}
+
+curl http://127.0.0.1:5000/get-pet
+output: {"error":"No pet id added to url"}
+
