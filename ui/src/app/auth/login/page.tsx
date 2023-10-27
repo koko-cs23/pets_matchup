@@ -6,10 +6,11 @@ import { useForm } from 'react-hook-form';
 import { ImSpinner } from 'react-icons/im';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginSchema, LoginSchemaType } from '../../../utils/schemas';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { apiAddress } from '../../../utils/variables';
 import { AiOutlineMail } from 'react-icons/ai';
 import { BiShow, BiHide } from 'react-icons/bi';
+import { signIn } from 'next-auth/react';
 
 const Login = () => {
   //   const { user, authChecking }: any = useContext(AuthContext);
@@ -38,39 +39,45 @@ const Login = () => {
 
   console.log(errors);
 
-  const signIn = async ({ email, password }: LoginSchemaType) => {
-    const res = await fetch(`${apiAddress}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        password
-      })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      router.push('/login');
-    } else if (data.message == 'This email address is already taken') {
-      setError('email', {
-        type: 'server',
-        message: data.message
-      });
-    } else {
-      alert(data?.message);
-    }
+  // const signIn = async ({ email, password }: LoginSchemaType) => {
+  // const res = await fetch(`${apiAddress}/auth/register`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify({
+  //     email,
+  //     password
+  //   })
+  // });
+  // const data = await res.json();
+  // if (res.ok) {
+  //   router.push('/login');
+  // } else if (data.message == 'This email address is already taken') {
+  //   setError('email', {
+  //     type: 'server',
+  //     message: data.message
+  //   });
+  // } else {
+  //   alert(data?.message);
+  // }
+  // signIn("credentials", {{email, password}, redirect: false})
+  // };
+
+  const signIn = async (v) => {
+    signIn('credentials', { ...v, redirect: false });
+    router.push('/');
   };
 
   return (
-    <main className='min-h-[75vh] rounded-lg shadow-md text-center py-12 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
+    <main className='min-h-[75vh] rounded-lg shadow-md text-center pb-12 pt-28 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
       <div className='flex gap-11 flex-col w-full'>
         <h2 className='text-secondary text-4xl font-medium'>Login</h2>
         <form
           onSubmit={handleSubmit(signIn)}
           className='flex flex-col gap-7 dark:text-gray-100'>
           <div className='relative'>
-            <span className='absolute right-0'>
+            <span className='absolute right-0 top-1'>
               <AiOutlineMail />
             </span>
             <input
@@ -86,7 +93,7 @@ const Login = () => {
           </div>
           <div className='relative'>
             <span
-              className='absolute right-0'
+              className='absolute right-0 top-1'
               onClick={() => setShowPassWord(!showPassword)}>
               {showPassword ? <BiShow /> : <BiHide />}
             </span>
@@ -118,6 +125,7 @@ const Login = () => {
             Click here to Sign Up
           </Link>
         </p>
+        <button>Log in with Github</button>
       </div>
     </main>
   );

@@ -1,16 +1,20 @@
-// TODO: make one Component and top | items
+// TODO: top | items
 
 export const SelectInput = ({
   register,
   fields,
   errors,
   items,
+  required = true,
   placeholder,
-  top
+  top,
+  disabled = false
 }: {
   items?: string[] | number[];
   register: {};
   fields: boolean;
+  required?: boolean;
+  disabled?: boolean;
   errors: string | undefined;
   placeholder: string;
   top?: { name: string; subs?: string[]; cities?: string[] }[];
@@ -18,15 +22,14 @@ export const SelectInput = ({
   return (
     <div className='relative w-full'>
       <select
+        aria-required='true'
         {...register}
         aria-invalid={!!errors}
+        aria-errormessage={placeholder}
         className={`w-full p-[10px] border-solid border bg-primaryBg border-opacity-20 rounded-md outline-0 transition-transform invalid:border-red-600 peer ${
           !fields && 'normal'
         } ${fields && errors && 'border-red-600'} ${fields && 'outline-none'}`}>
-        <option value={-1} disabled>
-          {/* TODO: Fix Below */}
-          {/* --{placeholder}-- */}
-        </option>
+        <option value={-1} disabled></option>
         {top
           ? top.map((value, i) => (
               <option key={i} value={i}>
@@ -41,8 +44,14 @@ export const SelectInput = ({
       </select>
       <span className='translate-x-[10px] top-0 -translate-y-[7px] text-[0.65rem] py-0 px-[10px] border-x-primaryText tracking-tight transition-transform border border-y-0 leading-4 bg-primaryBg dark:bg-[#18191b] absolute left-0 p-[10px] pointer-events-none uppercase peer[.normal]:transition-transform peer-[.normal]:text-base peer-[.normal]:border-none peer-[.normal]:top-4 peer-focus-visible:!top-0 peer-[.normal]:bg-primaryBg peer-focus-visible:!text-[0.65rem]'>
         {placeholder}
+        {required && (
+          <span className='text-red-400 dark:text-red-300 text-xs'>*</span>
+        )}
       </span>
-      <div role='alert' className='text-red-400 dark:text-red-300 text-xs'>
+      <div
+        role='alert'
+        id={placeholder}
+        className='text-red-400 dark:text-red-300 text-xs'>
         {errors}
       </div>
     </div>
@@ -54,13 +63,15 @@ export const DefaultInput = ({
   fields,
   errors,
   placeholder,
-  type = 'text'
+  type = 'text',
+  required = true
 }: {
   type: 'text' | 'number' | 'password';
   register: {};
   fields: boolean;
   errors: string | undefined;
   placeholder: string;
+  required?: boolean;
 }) => {
   return (
     <div className='relative w-full'>
@@ -72,11 +83,19 @@ export const DefaultInput = ({
         autoComplete='off'
         {...register}
         aria-invalid={!!errors}
+        aria-required={required}
+        aria-errormessage={placeholder}
       />
       <span className='translate-x-[10px] top-0 -translate-y-[7px] text-[0.65rem] py-0 px-[10px] border-x-primaryText tracking-tight transition-transform border border-y-0 leading-4 bg-primaryBg dark:bg-[#18191b] absolute left-0 p-[10px] pointer-events-none uppercase peer[.normal]:transition-transform peer-[.normal]:text-base peer-[.normal]:border-none peer-[.normal]:top-4 peer-focus-visible:!top-0 peer-[.normal]:bg-primaryBg peer-focus-visible:!text-[0.65rem]'>
-        {placeholder}
+        {placeholder}{' '}
+        {required && (
+          <span className='text-red-400 dark:text-red-300 text-xs'>*</span>
+        )}
       </span>
-      <span role='alert' className='text-red-400 dark:text-red-300 text-xs'>
+      <span
+        role='alert'
+        id={placeholder}
+        className='text-red-400 dark:text-red-300 text-xs'>
         {errors}
       </span>
     </div>
@@ -87,30 +106,36 @@ export const DescriptionInput = ({
   register,
   fields,
   errors,
-  placeholder
+  placeholder,
+  required = true
 }: {
   register: {};
   fields: boolean;
   errors: string | undefined;
   placeholder: string;
+  required?: boolean;
 }) => {
   return (
     <div className='relative w-full'>
       <textarea
-        // className={`w-full p-[10px]  border-solid border bg-transparent border-opacity-20 rounded-md outline-0  transition-transform invalid:border-red-600 peer ${
-        //   fields && 'isValid'
-        // } ${fields && errors && 'modified'}`}
         className={`w-full p-[10px] border-solid border bg-transparent border-opacity-20 rounded-md outline-0 transition-transform invalid:border-red-600 peer h-36 ${
           !fields && 'normal'
         } ${fields && errors && 'border-red-600'} ${fields && 'outline-none'}`}
         {...register}
         aria-invalid={!!errors}
+        aria-required={required}
+        aria-errormessage={placeholder}
       />
       <span className='translate-x-[10px] top-0 -translate-y-[7px] text-[0.65rem] py-0 px-[10px] border-x-primaryText tracking-tight transition-transform border border-y-0 leading-4 bg-primaryBg dark:bg-[#18191b] absolute left-0 p-[10px] pointer-events-none uppercase peer[.normal]:transition-transform peer-[.normal]:text-base peer-[.normal]:border-none peer-[.normal]:top-4 peer-focus-visible:!top-0 peer-[.normal]:bg-primaryBg peer-focus-visible:!text-[0.65rem]'>
-        {placeholder}
+        {placeholder}{' '}
+        {required && (
+          <span className='text-red-400 dark:text-red-300 text-xs'>*</span>
+        )}
       </span>
-
-      <span role='alert' className='text-red-400 dark:text-red-300 text-xs'>
+      <span
+        role='alert'
+        id={placeholder}
+        className='text-red-400 dark:text-red-300 text-xs'>
         {errors}
       </span>
     </div>

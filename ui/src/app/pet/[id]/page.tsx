@@ -1,65 +1,28 @@
-'use client';
-
+import { ImgCarousel } from '@/components/helpers/ImgCarousel';
 import { FaRegClock } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
-import navBtn from '../../../../public/carousel-nav.png';
-import Image from 'next/image';
-import { useState } from 'react';
 
 const PetDetails = () => {
-  const [imgIndex, setImgIndex] = useState(0);
-  const imgs = [1, 2, 3, 4];
-
-  const prevImg = () => {
-    setImgIndex((index) => {
-      if (index === 0) {
-        return 0;
-      } else return index - 1;
-    });
-  };
-
-  const nextImg = () => {
-    setImgIndex((index) => {
-      if (index === imgs.length - 1) {
-        return index;
-      } else return index + 1;
-    });
-  };
+  const imgs = [
+    '/24852466_1659565300793672_2707528689187707034_n.jpg',
+    '/IMG_1272.JPG',
+    '/AmericanEskimo-exercise.jpeg',
+    '/IMG_1272.JPG',
+    '/IMG_1276.JPG',
+    '/IMG_1286.JPG',
+    '/Pet Owners and Cancer Treatment.jpg',
+    '/puppy-kitten-heart.png'
+  ];
 
   return (
     <main>
-      <header className='m-auto py-8 bg-secondaryBg pt-16 '>
-        <h1 className='text-2xl font-semibold mb-4 md:text-center'>
+      <header className='m-auto py-8 bg-secondaryBg pt-28 '>
+        <h1 className='text-2xl font-semibold mb-4 md:text-center px-3 md:px-14 lg:px-32'>
           Eskimo Purebred 2 years male... Ready for mating
         </h1>
       </header>
       <div className='py-16 px-3 md:px-14 lg:px-32 flex flex-col gap-3'>
-        <div>
-          <div className='w-full aspect-4/3 bg-ctaColor rounded-xl relative'>
-            <button
-              className='absolute opacity-0 hover:opacity-100 transition-all top-1/2 left-3 rotate-180'
-              onClick={prevImg}>
-              <Image src={navBtn} alt='previous image' className='h-1/6' />
-            </button>
-            <p className='text-center text-8xl'>{imgIndex}</p>
-            <button
-              className='absolute opacity-0 hover:opacity-100 transition-all top-1/2 right-3'
-              onClick={nextImg}>
-              <Image src={navBtn} alt='next image' className='h-1/6' />
-            </button>
-          </div>
-          <div className='flex - gap-2'>
-            {imgs.map((v, i) => (
-              <span key={i}>
-                <p
-                  onClick={() => setImgIndex(v)}
-                  className='w-14 h-14 border cursor-pointer'>
-                  {v}
-                </p>
-              </span>
-            ))}
-          </div>
-        </div>
+        <ImgCarousel imgs={imgs} />
         <span className='flex flex-wrap justify-between gap-x-14 opacity-70'>
           <span className='flex items-center gap-1'>
             <FaRegClock /> <i>Posted 2 days ago</i>
@@ -90,7 +53,7 @@ const PetDetails = () => {
           </span>
           <hr className='opacity-60 w-full' />
           <span className='w-full'>
-            <h6>Details:</h6>{' '}
+            <h6 className='font-bold opacity-80'>Details:</h6>{' '}
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Voluptatibus nostrum laudantium vero quo id eligendi provident!
@@ -98,10 +61,12 @@ const PetDetails = () => {
               molestiae facilis quidem nostrum cupiditate.
             </p>
           </span>
-          <span className='w-full flex justify-center'>
-            <button className='px-4 py-2 bg-ctaColor rounded-lg text-white'>
-              Owner&apos;s Contact
-            </button>
+          <span className='w-full flex gap-2'>
+            {/* <button className='px-4 py-2 bg-ctaColor rounded-lg text-white'>
+              Show Contact
+            </button> */}
+            <h5 className='font-bold opacity-80'>Owner&apos;s Contact:</h5>
+            <a href='tel:+2348053662673'>+2348053662673</a>
           </span>
         </div>
       </div>

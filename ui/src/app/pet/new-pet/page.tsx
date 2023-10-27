@@ -12,12 +12,6 @@ import {
 } from '@/components/helpers/InputFields';
 
 const AddPets = () => {
-  const size = ['XS', 'S', 'M', 'L', 'XL'];
-
-  //   useEffect(() => {
-  //     fields;
-  //   }, []);
-
   const {
     register,
     handleSubmit,
@@ -53,7 +47,7 @@ const AddPets = () => {
 
   let breeds: string[] = [];
   if (cat?.[fields.category]?.breeds) {
-    breeds = cat?.[fields.category]?.breeds;
+    breeds = cat?.[fields.category]?.breeds.sort();
   }
 
   let urlArray: string[] = [];
@@ -78,7 +72,7 @@ const AddPets = () => {
 
   return (
     <main>
-      <header className='m-auto py-8 bg-secondaryBg pt-16 md:px-16 px-3'>
+      <header className='m-auto py-8 bg-secondaryBg pt-28 md:px-16 px-3'>
         <h1 className='text-2xl font-semibold mb-4 text-center'>
           Find Mates for Your Pet
         </h1>
@@ -86,7 +80,7 @@ const AddPets = () => {
       <form
         onSubmit={handleSubmit(submit)}
         autoComplete='off'
-        className='flex flex-col gap-7 text-black dark:text-white md:px-16 px-3'>
+        className='flex flex-col gap-7 text-black dark:text-white my-8 mx-3 md:mx-16 lg:mx-32'>
         <DefaultInput
           errors={errors.petName?.message}
           placeholder="pet's name"

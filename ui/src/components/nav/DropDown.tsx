@@ -17,16 +17,13 @@ const Dropdown = ({
       <button
         className='flex text-sm gap-1 px-3 items-center w-full md:w-min'
         onClick={() => setDropdown(!dropdown)}
+        aria-expanded='false'
+        aria-controls={value}
+        aria-label='expand'
         tabIndex={tab}>
         <p>{value}</p>
-
-        {/* <span
-          className={
-            dropdown
-              ? 'rotate-180 transition-transform'
-              : 'rotate-0 transition-transform'
-          }> */}
         <svg
+          aria-hidden='true'
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
           viewBox='0 0 24 24'
@@ -41,19 +38,20 @@ const Dropdown = ({
             d='M19.5 8.25l-7.5 7.5-7.5-7.5'
           />
         </svg>
-        {/* </span> */}
       </button>
       <div
-        className={`flex flex-col gap-1 relative top-1 max-h-0 transition-all ml-1 overflow-hidden md:top-8 md:-left-2 px-8 md:absolute md:bg-secondaryBg md:text-primaryText md:w-32 opacity-0 duration-500 md:text-gray-600 ${
-          dropdown && '!max-h-52 !opacity-100 pb-4'
+        aria-hidden={dropdown}
+        id={value}
+        className={`grid transition-all relative md:absolute md:justify-center -translate-x-1/2 left-1/2 bg-secondaryBg md:top-11 rounded-b-xl ${
+          dropdown ? 'grid-rows-[1fr] pt-2 md:py-5 px-10' : 'grid-rows-[0fr]'
         }`}>
-        {content.map((item: string, i: number) => (
-          <div key={i}>
-            <Link href={item} tabIndex={+dropdown - 1}>
+        <div className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'>
+          {content.map((item: string, i: number) => (
+            <Link href={item} tabIndex={+dropdown - 1} key={i}>
               {item}
             </Link>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </span>
   );

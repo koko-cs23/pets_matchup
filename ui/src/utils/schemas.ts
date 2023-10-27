@@ -21,15 +21,10 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z
   .object({
-    firstName: z
+    fullName: z
       .string()
       .min(2, { message: 'Must contain at least 2 characters' })
-      .max(15, { message: 'Must contain at most 15 characters' })
-      .regex(/[a-zA-z]/, { message: 'Must contain alphabets only' }),
-    lastName: z
-      .string()
-      .min(2, { message: 'Must contain at least 2 characters' })
-      .max(15, { message: 'Must contain at most 15 characters' })
+      .max(30, { message: 'Must contain at most 30 characters' })
       .regex(/[a-zA-z]/, { message: 'Must contain alphabets only' }),
     email: z
       .string()
@@ -107,6 +102,17 @@ export const AddPetSchema = z.object({
     .string()
     .min(2, { message: 'Select the city' })
     .max(20, { message: 'Too long' }),
+  // imgs: z
+  //   .object({
+  //     value: z
+  //       .custom<File>()
+  //       .refine((file) => !!file?.[0], 'Img field cannot be empty')
+  //       .refine(
+  //         (file) => file?.[0]?.size <= MAX_FILE_SIZE,
+  //         'Max image size is 5MB.'
+  //       )
+  //   })
+  //   .array(),
   imgs: z
     .any()
     .refine(
@@ -125,47 +131,18 @@ export const AddPetSchema = z.object({
 });
 export const FilterPetSchema = z.object({
   //   category: z.enum(['cats', 'dogs']),
-  category: z.coerce
-    .number()
-    .min(0, { message: 'Select the category' })
-    .max(2)
-    .optional(),
-  //   country: z
-  //     .string()
-  //     .min(3, { message: 'Select the country' })
-  //     .max(20, { message: 'Invalid input' }),
-  state: z.coerce
-    .number()
-    .min(0, { message: 'Select the state' })
-    .max(36, { message: 'Invalid input' })
-    .optional(),
-  breed: z
-    .string()
-    .min(2, { message: 'Select the breed' })
-    .max(30, { message: 'Too long' })
-    .optional(),
-  //   purebred: z
-  //     .string()
-  //     .min(2, { message: 'Select Yes or No' })
-  //     .max(4, { message: 'Too long!' }),
-  //   age: z
-  //     .string()
-  //     .min(2, { message: 'Select the age' })
-  //     .max(30, { message: 'Too long!' }),
-  gender: z
-    .string()
-    .min(2, { message: 'Select the gender' })
-    .max(30, { message: 'Too long!' })
-    .optional(),
-  //   state: z
-  //     .string()
-  //     .min(2, { message: 'Select the state' })
-  //     .max(15, { message: 'Too long' }),
-  city: z
-    .string()
-    .min(2, { message: 'Select the city' })
-    .max(20, { message: 'Too long' })
-    .optional()
+  category: z.coerce.number().max(2).optional(),
+  country: z.string().max(20, { message: 'Invalid input' }).optional(),
+  state: z.coerce.number().max(36, { message: 'Invalid input' }).optional(),
+  breed: z.string().max(30, { message: 'Too long' }).optional(),
+  purebred: z.enum(['No', 'Yes']).optional(),
+  // age: z
+  //   .string()
+  //   .min(2, { message: 'Select the age' })
+  //   .max(30, { message: 'Too long!' }),
+  gender: z.string().max(30, { message: 'Too long!' }).optional(),
+  // state: z.string().max(15, { message: 'Too long' }).optional(),
+  city: z.string().max(20, { message: 'Too long' }).optional()
 });
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

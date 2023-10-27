@@ -12,15 +12,8 @@ import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from 'react-icons/ai';
 import { BiShow, BiHide } from 'react-icons/bi';
 
 const Register = () => {
-  //   const { user, authChecking }: any = useContext(AuthContext);
-
   const router = useRouter();
   const [showPassword, setShowPassWord] = useState(false);
-
-  //   useEffect(() => {
-  //     // TODO: Display "You are already logged in"
-  //     user && router.push('/');
-  //   }, [user]);
 
   const {
     register,
@@ -41,8 +34,7 @@ const Register = () => {
   const signUp = async ({
     email,
     password,
-    firstName,
-    lastName,
+    fullName,
     phone
   }: RegisterSchemaType) => {
     const res = await fetch(`${apiAddress}/auth/register`, {
@@ -53,8 +45,7 @@ const Register = () => {
       body: JSON.stringify({
         email,
         password,
-        firstName,
-        lastName,
+        fullName,
         phone
       })
     });
@@ -72,43 +63,29 @@ const Register = () => {
   };
 
   return (
-    <main className='min-h-[75vh] rounded-lg shadow-md text-center py-12 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
+    <main className='min-h-[75vh] rounded-lg shadow-md text-center pb-12 mt-28 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
       <div className='flex gap-11 flex-col w-full'>
         <h2 className='text-secondary text-4xl font-medium'>Register</h2>
         <form
           onSubmit={handleSubmit(signUp)}
           className='flex flex-col gap-7 dark:text-gray-100'>
           <div className='relative'>
-            <span className='absolute right-0'>
+            <span className='absolute right-0 top-1'>
               <AiOutlineUser />
             </span>
             <input
-              {...register('firstName')}
-              placeholder='First Name'
-              type='text'
-              className='w-full focus-visible:outline-0 border-b-2 border-gray-400  pr-7 focus-visible:border-b-[1px] focus-visible:border-solid focus-visible:border-orange-500 bg-transparent'
-            />
-            <span className='text-red-400 dark:text-red-300 text-xs'>
-              {errors.firstName?.message}
-            </span>
-          </div>
-          <div className='relative'>
-            <span className='absolute right-0'>
-              <AiOutlineUser />
-            </span>
-            <input
-              {...register('lastName')}
-              placeholder='Last Name'
+              {...register('fullName')}
+              placeholder='Full Name'
               type='text'
               className='w-full focus-visible:outline-0 border-b-2 border-gray-400  pr-7focus-visible:border-b-[1px] focus-visible:border-solid focus-visible:border-orange-500 bg-transparent'
             />
             <span className='text-red-400 dark:text-red-300 text-xs'>
               {' '}
-              {errors?.lastName?.message}
+              {errors?.fullName?.message}
             </span>
           </div>
           <div className='relative'>
-            <span className='absolute right-0'>
+            <span className='absolute right-0 top-1'>
               <AiOutlineMail />
             </span>
             <input
@@ -123,11 +100,12 @@ const Register = () => {
             </span>
           </div>
           <div className='relative'>
-            <span className='absolute right-0'>
+            <span className='absolute right-0 top-1'>
               <AiOutlinePhone />
             </span>
             <input
               type='number'
+              inputMode='numeric'
               {...register('phone')}
               placeholder='Phone number'
               className='w-full focus-visible:outline-0 border-b-2 border-gray-400  pr-7focus-visible:border-b-[1px] focus-visible:border-solid focus-visible:border-orange-500 bg-transparent'
