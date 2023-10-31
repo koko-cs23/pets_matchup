@@ -30,7 +30,7 @@ export const RegisterSchema = z
       .string()
       .email({ message: 'Please input a valid email address' })
       .max(40, { message: 'Must contain at most 40 characters' }),
-    phone: z.coerce.number(),
+    phone: z.string(),
     // .min(11, { message: 'must be a valid phone number' })
     // .max(11, { message: 'must be a valid phone number' }),
     password: z
@@ -59,6 +59,24 @@ export const RegisterSchema = z
       });
     }
   });
+export const RegisterSchemaApi = z.object({
+  fullName: z
+    .string()
+    .min(2, { message: 'Must contain at least 2 characters' })
+    .max(30, { message: 'Must contain at most 30 characters' })
+    .regex(/[a-zA-z]/, { message: 'Must contain alphabets only' }),
+  email: z
+    .string()
+    .email({ message: 'Please input a valid email address' })
+    .max(40, { message: 'Must contain at most 40 characters' }),
+  phone: z.string(),
+  // .min(11, { message: 'must be a valid phone number' })
+  // .max(11, { message: 'must be a valid phone number' }),
+  password: z
+    .string()
+    .min(4, { message: 'Must contain at least 4 characters' })
+    .max(20, { message: 'Must contain at most 20 characters' })
+});
 
 export const AddPetSchema = z.object({
   //   category: z.enum(['cats', 'dogs']),
@@ -147,5 +165,6 @@ export const FilterPetSchema = z.object({
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
+export type RegisterSchemaApiType = z.infer<typeof RegisterSchemaApi>;
 export type AddPetSchemaType = z.infer<typeof AddPetSchema>;
 export type FilterPetSchemaType = z.infer<typeof FilterPetSchema>;

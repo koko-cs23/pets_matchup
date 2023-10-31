@@ -10,8 +10,11 @@ import {
   DescriptionInput,
   DefaultInput
 } from '@/components/helpers/InputFields';
+import { useState } from 'react';
 
 const AddPets = () => {
+  const [imgSubmitting, setImgSubmitting] = useState(false);
+  const [imgsUrl, setImgsUrl] = useState([]);
   const {
     register,
     handleSubmit,
@@ -67,6 +70,36 @@ const AddPets = () => {
     name: 'imgs',
     control
   });
+
+  // const submitImg = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   setImgSubmitting(true);
+  //   const formData = new FormData();
+  //   // const images = [img1, img2];
+  //   // for (let i = 0; i < images.length; i++) {
+  //   // 	formData.append("images[]", images[i]);
+  //   // }
+  //   formData.append('file', img1);
+  //   formData.append('upload_preset', 'u16vszak');
+  //   formData.append('cloud_name', 'dyez5iyvm');
+  //   const identityVerification = await fetch(
+  //     `https://api.cloudinary.com/v1_1/dyez5iyvm/image/upload`,
+  //     {
+  //       method: 'POST',
+  //       body: formData
+  //     }
+  //   );
+  //   formData.append('file', img2);
+  //   formData.append('upload_preset', 'u16vszak');
+  //   formData.append('cloud_name', 'dyez5iyvm');
+  //   const addressVerification = await fetch(
+  //     `https://api.cloudinary.com/v1_1/dyez5iyvm/image/upload`,
+  //     {
+  //       method: 'POST',
+  //       body: formData
+  //     }
+  //   );
+  // };
 
   const submit = async (data: AddPetSchemaType) => {};
 

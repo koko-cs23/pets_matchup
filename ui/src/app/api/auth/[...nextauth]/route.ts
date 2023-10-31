@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth';
+import CryptoJS from 'crypto-js';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
@@ -21,64 +22,65 @@ const handler = NextAuth({
         email: { label: 'Email', type: 'text', placeholder: 'Email' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials) {
-        // const user = {
-        //   id: 1,
-        //   email: 'johndoe@example.com',
-        //   firstName: 'John',
-        //   lastName: 'Ezeiru'
-        // };
-        // return user;
+      async authorize(credentials, req) {
+        console.log('authorise');
+        console.log({ credentials: credentials });
+        console.log({ req: req });
         if (!credentials?.email || !credentials.password) {
-          new NextResponse(
-            JSON.stringify({ message: 'All Fields are required' }),
-            {
-              status: 301
-            }
-          );
+          console.log('no credentials');
+          return null;
         } else {
           try {
+            console.log('try block');
             const [user] = await db
               .select()
               .from(users)
               .where(eq(users.email, credentials.email.toLowerCase()));
             if (!user) {
-              new NextResponse(
-                JSON.stringify({
-                  emailError: 'This email address is not registered'
-                }),
-                {
-                  status: 401
-                }
-              );
+              // new NextResponse(
+              //   JSON.stringify({
+              //     emailError: 'This email address is not registered'
+              //   }),
+              //   {
+              //     status: 401
+              //   }
+              // );
+              return null;
             }
             const { passwordHash, ...rest } = user;
             const unhashedPassword = CryptoJS.AES.decrypt(
-              passwordHash,
+              passwordHash!,
               process.env.PASSWORD_SECRET!
             ).toString(CryptoJS.enc.Utf8);
             if (credentials.password !== unhashedPassword) {
-              new NextResponse(
-                JSON.stringify({ passwordError: 'This password is incorrect' }),
-                {
-                  status: 401
-                }
-              );
+              // new NextResponse(
+              //   JSON.stringify({ passwordError: 'This password is incorrect' }),
+              //   {
+              //     status: 401
+              //   }
+              // );
+
+              return null;
             } else {
+              console.log('apt!');
               return user;
             }
           } catch (err) {
             console.error(err);
-            new NextResponse(JSON.stringify(err), {
-              status: 500
-            });
+            // new NextResponse(JSON.stringify(err), {
+            //   status: 500
+            // });
+            return null;
           }
         }
       }
     })
   ],
   secret: process.env.SECRET,
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60 // 30 days
+  },
   debug: process.env.NODE_ENV === 'development'
 });
 

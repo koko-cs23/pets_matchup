@@ -1,4 +1,9 @@
-import { InferInsertModel, InferSelectModel, relations } from 'drizzle-orm';
+import {
+  InferInsertModel,
+  InferSelectModel,
+  relations,
+  sql
+} from 'drizzle-orm';
 import {
   pgTable,
   text,
@@ -10,19 +15,26 @@ import {
 } from 'drizzle-orm/pg-core';
 import { AdapterAccount } from 'next-auth/adapters';
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
+export const users = pgTable('user', {
+  id: text('id')
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 120 }).notNull(),
   passwordHash: varchar('password_hash', { length: 120 }),
-  email: varchar('email', { length: 120 }).notNull(),
+  email: varchar('email', { length: 120 }).notNull().unique(),
   emailVerified: timestamp('email_verified', { mode: 'date' }),
   image: text('image'),
   role: text('role', { enum: ['admin', 'user', 'moderator'] })
     .default('user')
     .notNull(),
-  phone: varchar('phone', { length: 20 }).notNull(),
+  phone: varchar('phone', { length: 20 }).notNull().unique(),
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
+
+export const userRelations = relations(users, ({ many }) => ({
+  pets: many(pets)
+}));
 
 export const accounts = pgTable(
   'account',
@@ -64,38 +76,14 @@ export const verificationTokens = pgTable(
   (vt) => ({ compoundKey: primaryKey(vt.identifier, vt.token) })
 );
 
-export const userRelations = relations(users, ({ one, many }) => ({
-  userAddress: one(userAddress, {
-    fields: [users.id],
-    references: [userAddress.id]
-  }),
-  pets: many(pets)
-}));
-
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;
-
-export const userAddress = pgTable('user_address', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  phone: varchar('phone', { length: 120 }),
-  address: varchar('address', { length: 120 }),
-  country: varchar('country', { length: 120 }),
-  city: varchar('city', { length: 120 }),
-  postalCode: varchar('postal_code', { length: 120 }).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull()
-  // userId: integer('user_id').references(() => users.id, {
-  // 	onDelete: 'cascade'
-  // })
-});
-
-export type UserAddress = InferSelectModel<typeof userAddress>;
-export type NewUserAddress = InferInsertModel<typeof userAddress>;
 
 //   user_id     Int    @unique
 //   user        User   @relation(fields: [user_id], references: [id])
 // }
 
-export const pets = pgTable('pets', {
+export const pets = pgTable('pet', {
   id: uuid('id').primaryKey().defaultRandom(),
   petName: varchar('pet-name', { length: 20 }).notNull(),
   country: varchar('country', { length: 20 }).notNull(),
@@ -111,7 +99,7 @@ export const pets = pgTable('pets', {
     .array()
     .notNull()
     .$type<Array<string>>(), // array
-  userId: uuid('user_id'),
+  userId: text('user_id'),
   category: varchar('category', { length: 20 }).references(
     () => categories.name
   ),
@@ -132,7 +120,7 @@ export const petsRelations = relations(pets, ({ one }) => ({
 export type Pet = InferSelectModel<typeof pets>;
 export type NewPet = InferInsertModel<typeof pets>;
 
-export const categories = pgTable('categories', {
+export const categories = pgTable('category', {
   name: varchar('name', { length: 20 }).primaryKey()
 });
 

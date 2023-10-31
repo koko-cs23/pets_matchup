@@ -51,6 +51,12 @@
   .line-input {
     @apply w-full border-b-2 border-slate-500 bg-transparent;
   }
+  .PhoneInputInput {
+    @apply w-full focus-visible:outline-0 border-b-2 border-gray-400 pr-7 focus-visible:border-b-[1px] focus-visible:border-solid focus-visible:border-orange-500 bg-transparent;
+  }
+  .PhoneInputCountrySelect {
+    @apply bg-primaryBg text-primaryText;
+  }
 }
 
 @media (min-width: 1020px) {
@@ -78,6 +84,18 @@ input:-webkit-autofill:focus {
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 1fr;
 }
+
+.grd {
+  background-image: linear-gradient(
+    90deg,
+    rgba(233, 237, 241, 0) 35%,
+    rgb(161, 165, 190)
+  );
+}
+
+/* .PhoneInputInput {
+  background-color: red;
+} */
 
 .gtc {
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
