@@ -1,22 +1,21 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { places, cat } from '@/utils/jsons';
+import { places, cat, agesArr } from '@/utils/jsons';
 import { AddPetSchema, AddPetSchemaType } from '../../../utils/schemas';
 import {
   SelectInput,
   DescriptionInput,
   DefaultInput
 } from '@/components/helpers/InputFields';
+import { useSession } from 'next-auth/react';
 
 const AddPets = () => {
-  const size = ['XS', 'S', 'M', 'L', 'XL'];
-
-  //   useEffect(() => {
-  //     fields;
-  //   }, []);
+  const router = useRouter();
+  const auth = useSession();
 
   const {
     register,
@@ -42,9 +41,7 @@ const AddPets = () => {
   });
 
   const fields = watch();
-  console.log(fields);
-
-  console.log(errors);
+  // console.log(fields);
 
   let place: string[] = [];
   if (places?.[fields.state]?.cities) {
@@ -53,7 +50,7 @@ const AddPets = () => {
 
   let breeds: string[] = [];
   if (cat?.[fields.category]?.breeds) {
-    breeds = cat?.[fields.category]?.breeds;
+    breeds = cat?.[fields.category]?.breeds.sort();
   }
 
   let urlArray: string[] = [];
@@ -74,11 +71,70 @@ const AddPets = () => {
     control
   });
 
-  const submit = async (data: AddPetSchemaType) => {};
+  const submit = async ({
+    age,
+    breed,
+    category,
+    city,
+    country,
+    description,
+    gender,
+    imgs,
+    petName,
+    purebred,
+    state
+  }: AddPetSchemaType) => {
+    const imgObjects = await Promise.all(
+      imgs.map(async (v) => {
+        const formInput = new FormData();
+        formInput.append('file', v.value[0]);
+        formInput.append('upload_preset', 'pets_matchup');
+        const res = fetch(
+          'https://api.cloudinary.com/v1_1/naijason/image/upload',
+          {
+            method: 'POST',
+            body: formInput
+          }
+        );
+        return (await res).json();
+      })
+    );
+    console.log({ imgobj: imgObjects });
+    const imgUrls = imgObjects.map((a) => a.secure_url);
+    console.log({ imgUrls: imgUrls });
+    const res = await fetch(`/api/pets`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // send the userID
+      body: JSON.stringify({
+        age,
+        breed,
+        category: cat[category].name,
+        city,
+        country,
+        description,
+        gender,
+        imgs: imgUrls,
+        petName,
+        purebred,
+        state: places[state].name,
+        userEmail: auth.data?.user?.email
+      })
+    });
+    const response = await res.json();
+    console.log(response);
+    if (res.ok) {
+      router.push('/?alert=Pet uploaded successfully');
+    } else {
+      alert('Something went wrong');
+    }
+  };
 
   return (
     <main>
-      <header className='m-auto py-8 bg-secondaryBg pt-16 md:px-16 px-3'>
+      <header className='m-auto py-8 bg-secondaryBg pt-28 md:px-16 px-3'>
         <h1 className='text-2xl font-semibold mb-4 text-center'>
           Find Mates for Your Pet
         </h1>
@@ -86,7 +142,7 @@ const AddPets = () => {
       <form
         onSubmit={handleSubmit(submit)}
         autoComplete='off'
-        className='flex flex-col gap-7 text-black dark:text-white md:px-16 px-3'>
+        className='flex flex-col gap-7 text-black dark:text-white my-8 mx-3 md:mx-16 lg:mx-32'>
         <DefaultInput
           errors={errors.petName?.message}
           placeholder="pet's name"
@@ -120,7 +176,7 @@ const AddPets = () => {
           register={register('purebred')}
         />
         <SelectInput
-          items={['Yes', 'No']}
+          items={agesArr}
           errors={errors.age?.message}
           fields={fields?.age?.length > 0}
           placeholder='age'

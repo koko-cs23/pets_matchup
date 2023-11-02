@@ -7,28 +7,20 @@ import { useSession, signOut } from 'next-auth/react';
 
 const NavBar = () => {
   const [ham, setHam] = useState(false);
-  const session = useSession();
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const session: any = useSession();
 
-  //   useEffect(() => {
-  //     function handleClickOutsideModal(event) {
-  //       if (navRef.current && !navRef.current.contains(event.target)) {
-  //         setHam(false);
-  //       }
-  //     }
-  //     document.addEventListener('mousedown', handleClickOutsideModal);
-  //     return () => {
-  //       document.removeEventListener('mousedown', handleClickOutsideModal);
-  //     };
-  //   }, [navRef]);
+  console.log(session);
 
   return (
     <header
       // ref={navRef}
-      className='bg-secondaryBg flex items-center justify-between px-3 text-sm py-2 md:py-1 md:px-14 lg:px-32 text-primaryText'>
+      className='bg-secondaryBg flex items-center justify-between px-3 text-sm py-5 md:px-14 lg:px-32 text-primaryText fixed w-full z-20 top-0'>
       <Link
         href={'/'}
         className='flex gap-1 md:px-2 md:py-1 md:rounded-lg bg-primaryBg rounded-full md:bg-white items-center md:hover:bg-slate-200 text-black'>
         <svg
+          aria-hidden='true'
           width='32'
           height='32'
           viewBox='0 0 32 32'
@@ -83,7 +75,8 @@ const NavBar = () => {
         <i className='hidden md:block'>PetsMatchUp</i>
       </Link>
       <nav
-        className={`flex gap-2 md:gap-1 w-full left-0 absolute transition-transform z-50 bg-secondaryBg flex-col py-8 px-2 top-11 md:w-auto md:static md:bg-transparent md:flex-row md:translate-x-0 md:py-0 ${
+        id='navigation'
+        className={`flex gap-2 md:items-center md:gap-1 w-full left-0 absolute transition-transform z-50 bg-secondaryBg flex-col py-8 px-2 top-16 md:w-auto md:static md:bg-transparent md:flex-row md:translate-x-0 md:py-0 ${
           !ham && 'transition-transform -translate-x-full'
         }`}>
         <Dropdown
@@ -100,52 +93,87 @@ const NavBar = () => {
           <p className='table px-3 w-full cursor-pointer'>Blog</p>
         </Link>
         <hr className='dark:opacity-30' />
-        <Link href='/dashboard'>
-          <p className='table px-3 w-full cursor-pointer'>Dashboard</p>
-        </Link>
+        <search className='px-3'>
+          <input
+            type='search'
+            placeholder='Search'
+            id='search'
+            className='rounded-lg md:w-32 w-full py-2 px-5 border border-ctaColor focus-within:w-full'
+          />
+        </search>
       </nav>
 
       {/* <Link href={'/profile'} className='text-inherit contents '> */}
-      <button
-        id='user'
-        className='group relative cursor-pointer p-1 rounded-full border-solid border-[1px] border-primaryText md:hidden bg-primaryBg'>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          strokeWidth={1.5}
-          stroke='currentColor'
-          className='w-6 h-6'>
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'
-          />
-        </svg>
-        {/* <span className='hidden group-focus:block group-hover:block bg-secondary text-white rounded-[4px] py-[1px] px-[3px] text-xs text-center z-50 absolute top-[110%] -left-1 dark:bg-white dark:text-black after:content-[""] after:absolute after:bottom-full after:left-[40%] after:-ml[5px] after:border-[5px] after:border-solid after:border-b-secondary after:border-x-transparent after:border-t-transparent dark:after:border-b-white'>
-          Profile
-        </span> */}
-      </button>
+      <div className='static md:relative flex transition-all'>
+        <button
+          type='button'
+          aria-expanded={showUserDropdown}
+          id='user'
+          onClick={() => {
+            setShowUserDropdown(!showUserDropdown);
+            setHam(false);
+          }}
+          className='group relative cursor-pointer p-1 rounded-full border-solid border-[1px] border-primaryText bg-primaryBg'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            strokeWidth={1.5}
+            stroke='currentColor'
+            className='w-6 h-6'>
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'
+            />
+          </svg>
+        </button>
+        <div
+          aria-hidden={showUserDropdown}
+          className={`grid transition-all absolute justify-center -translate-x-1/2 left-1/2 w-full bg-secondaryBg top-16 md:w-48 md:top-11 rounded-b-xl ${
+            showUserDropdown
+              ? 'grid-rows-[1fr] p-5  md:border md:border-primaryText'
+              : 'grid-rows-[0fr]'
+          }`}>
+          <div
+            className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'
+            onClick={() => setShowUserDropdown(false)}>
+            <Link href={`/dashboard/${session.data?.user?.id}`}>Dashboard</Link>
+            {/* <Link href={`/dashboard/${session.data?.user?.id}`}>Profile</Link> */}
+            <Link href={'#'}> My Pets</Link>
+            {session.status !== 'authenticated' ? (
+              <Link href={'/auth/login'}>
+                {' '}
+                <button className='btn w-[70vw] md:w-32'>Login</button>
+              </Link>
+            ) : (
+              <button
+                className='btn w-[70vw] md:w-32'
+                onClick={() => signOut()}>
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
       <button
         tabIndex={0}
         className={
           'group border-[1px] border-primaryText py-3 px-2 relative bg-primaryBg shadow-md md:hidden rounded-lg'
         }
-        onClick={() => setHam(!ham)}>
+        aria-expanded={ham}
+        aria-controls='navigation'
+        aria-label='Show navigation menus'
+        onClick={() => {
+          setHam(!ham);
+          setShowUserDropdown(false);
+        }}>
         <span
           className={`relative h-[2px] block w-5 bg-primaryText before:absolute before:top-[-6px] before:left-0 before:h-[2px] before:w-full before:bg-primaryText before:content-[""] before:transition-transform after:absolute after:top-[6px] after:left-0 after:h-[2px] after:w-full after:bg-primaryText after:content-[""] after:transition-transform  ${
             ham &&
-            'duration-1000 before:-rotate-45 after:rotate-45 before:-translate-x-[5px] before:translate-y-[1px] before:transition-transform after:-translate-x-[5px] after:-translate-y-[1px] after:scale-x-75 before:scale-x-75 after:transition-transform'
+            'before:-rotate-45 after:rotate-45 before:-translate-x-[5px] before:translate-y-[1px] before:transition-transform after:-translate-x-[5px] after:-translate-y-[1px] after:scale-x-75 before:scale-x-75 after:transition-transform'
           }`}></span>
-        {/* <span className='hidden group-focus:block group-hover:block bg-secondary text-white rounded-[4px] py-[1px] px-[3px] text-xs text-center z-50 absolute top-[110%] left-0 dark:bg-white dark:text-black after:content-[""] after:absolute after:bottom-full after:left-[40%] after:-ml[5px] after:border-[5px] after:border-solid after:border-b-secondary after:border-x-transparent after:border-t-transparent dark:after:border-b-white'>
-          Menu
-        </span> */}
       </button>
-      <input
-        type='search'
-        placeholder='Search'
-        className='rounded-lg px-1 hidden md:block w-32'
-      />
     </header>
   );
 };

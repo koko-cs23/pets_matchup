@@ -27,17 +27,20 @@ const Footer = () => {
         <span className='py-2'>
           <div>
             <h4 className='text-base text-ctaColor'>ABOUT US</h4>
-            <Link href={'/about'}>
+            <Link href={'/about-us'}>
               <p>About Us</p>
             </Link>
-            <Link href={'#'}>
+            <Link href={'/disclaimer'}>
               <p>Disclaimer</p>
             </Link>
-            <Link href={'/about'}>
+            <Link href={'/terms-and-conditions'}>
               <p>Terms & conditions</p>
             </Link>
-            <Link href={'/about'}>
+            <Link href={'/faqs'}>
               <p>FAQ</p>
+            </Link>
+            <Link href={'/privacy-policy'}>
+              <p>Privacy Policy</p>
             </Link>
           </div>
         </span>
