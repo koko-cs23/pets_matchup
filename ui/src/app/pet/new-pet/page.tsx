@@ -12,6 +12,7 @@ import {
   DefaultInput
 } from '@/components/helpers/InputFields';
 import { useSession } from 'next-auth/react';
+import { apiAddress } from '@/utils/variables';
 
 const AddPets = () => {
   const router = useRouter();
@@ -102,7 +103,7 @@ const AddPets = () => {
     console.log({ imgobj: imgObjects });
     const imgUrls = imgObjects.map((a) => a.secure_url);
     console.log({ imgUrls: imgUrls });
-    const res = await fetch(`/api/pets`, {
+    const res = await fetch(`${apiAddress}/api/pets`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

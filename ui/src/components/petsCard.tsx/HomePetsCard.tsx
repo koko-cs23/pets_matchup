@@ -1,11 +1,31 @@
 import { PetSchemaType } from '@/utils/schemas';
 import VerticalProductCard from './VerticalPetsCard';
+import { NextResponse } from 'next/server';
+import { db } from '@/db/db';
+
+async function fetchPets() {
+  'use server';
+  try {
+    const allPets = await db.query.pets.findMany({ limit: 60 });
+    if (!allPets)
+      return new NextResponse(JSON.stringify({ message: 'No pet found' }), {
+        status: 400
+      });
+    return new NextResponse(JSON.stringify(allPets), { status: 201 });
+  } catch (err) {
+    return new NextResponse(
+      JSON.stringify({ err, message: 'Something went wrong' }),
+      {
+        status: 500
+      }
+    );
+  }
+}
 
 const HomePetsCard = async () => {
-  const data = await fetch('http://localhost:3000/api/pets', {
-    cache: 'no-store'
-  });
-  const pets: PetSchemaType[] = await data.json();
+  // const pets: PetSchemaType[] = await fetchPets();
+  const v = await fetchPets();
+  const pets: PetSchemaType[] = await v.json();
   console.log(pets);
 
   return (

@@ -4,9 +4,10 @@ import { FaRegClock } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
 import { type PetSchemaType } from '@/utils/schemas';
 import ShowContact from '@/components/ShowContact';
+import { apiAddress } from '@/utils/variables';
 
 async function fetchPet(id: string) {
-  const res = await fetch(`http://localhost:3000/api/pets/${id}`);
+  const res = await fetch(`${apiAddress}/api/pets/${id}`);
   if (!res.ok) return undefined;
   return res.json();
 }
