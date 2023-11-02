@@ -56,7 +56,7 @@ const Profile = async ({ params }: { params: { id: string } }) => {
               <p className='text-lg font-semibold'>{me.name}</p>
             </div>
             <Link
-              href={'#'}
+              href={`/dashboard/${me.id}/pets`}
               className='w-full p-3 bg-primaryBg rounded-lg hover:bg-secondaryBg hover:shadow hover:shadow-ctaColor transition-all hover:transition-all'>
               <p>My Adverts</p>
             </Link>
@@ -85,11 +85,11 @@ const Profile = async ({ params }: { params: { id: string } }) => {
               className='w-full p-3 bg-primaryBg rounded-lg hover:bg-secondaryBg hover:shadow hover:shadow-ctaColor transition-all hover:transition-all'>
               <p>Transactions</p>
             </Link>
-            <button
+            {/* <button
               // onClick={signout}
               className='btn m-auto mt-11'>
               Log Out
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
