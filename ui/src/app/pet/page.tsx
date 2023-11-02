@@ -1,8 +1,7 @@
 import PetsFilter from '@/components/PetsFilter';
 import HomePetsCard from '@/components/petsCard.tsx/HomePetsCard';
-import React from 'react';
 
-export const AllPets = () => {
+const AllPets = () => {
   return (
     <main className='min-h-[calc(100vh-476px)] md:min-h-[calc(100vh-16rem)]'>
       <header className='m-auto py-8 bg-secondaryBg pt-28 '>

@@ -13,24 +13,24 @@ CREATE TABLE IF NOT EXISTS "account" (
 );
 
 CREATE TABLE IF NOT EXISTS "category" (
-	"name" varchar(20) PRIMARY KEY NOT NULL
+	"name" text PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "pet" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"pet-name" varchar(20) NOT NULL,
+	"pet_name" varchar(20) NOT NULL,
 	"country" varchar(20) NOT NULL,
 	"state" varchar(20) NOT NULL,
 	"breed" varchar(30) NOT NULL,
-	"pure-bred" varchar(30) NOT NULL,
-	"age" integer NOT NULL,
+	"pure_bred" varchar(30) NOT NULL,
+	"age" varchar(20) NOT NULL,
 	"gender" varchar(7) NOT NULL,
 	"description" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"cloudinary_ids" varchar(120)[] NOT NULL,
-	"user_id" text,
-	"category" varchar(20),
+	"user_id" text NOT NULL,
+	"category" text NOT NULL,
 	"city" varchar(20) NOT NULL
 );
 
@@ -63,6 +63,12 @@ CREATE TABLE IF NOT EXISTS "verificationToken" (
 
 DO $$ BEGIN
  ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "pet" ADD CONSTRAINT "pet_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

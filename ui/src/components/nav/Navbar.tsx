@@ -7,20 +7,10 @@ import { useSession, signOut } from 'next-auth/react';
 
 const NavBar = () => {
   const [ham, setHam] = useState(false);
-  const [showUserDropdown, SetShowUserDropdown] = useState(false);
-  const session = useSession();
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const session: any = useSession();
 
-  //   useEffect(() => {
-  //     function handleClickOutsideModal(event) {
-  //       if (navRef.current && !navRef.current.contains(event.target)) {
-  //         setHam(false);
-  //       }
-  //     }
-  //     document.addEventListener('mousedown', handleClickOutsideModal);
-  //     return () => {
-  //       document.removeEventListener('mousedown', handleClickOutsideModal);
-  //     };
-  //   }, [navRef]);
+  console.log(session);
 
   return (
     <header
@@ -107,6 +97,7 @@ const NavBar = () => {
           <input
             type='search'
             placeholder='Search'
+            id='search'
             className='rounded-lg md:w-32 w-full py-2 px-5 border border-ctaColor focus-within:w-full'
           />
         </search>
@@ -119,7 +110,7 @@ const NavBar = () => {
           aria-expanded={showUserDropdown}
           id='user'
           onClick={() => {
-            SetShowUserDropdown(!showUserDropdown);
+            setShowUserDropdown(!showUserDropdown);
             setHam(false);
           }}
           className='group relative cursor-pointer p-1 rounded-full border-solid border-[1px] border-primaryText bg-primaryBg'>
@@ -136,22 +127,32 @@ const NavBar = () => {
               d='M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'
             />
           </svg>
-          {/* <span className='hidden group-focus:block group-hover:block bg-secondary text-white rounded-[4px] py-[1px] px-[3px] text-xs text-center z-50 absolute top-[110%] -left-1 dark:bg-white dark:text-black after:content-[""] after:absolute after:bottom-full after:left-[40%] after:-ml[5px] after:border-[5px] after:border-solid after:border-b-secondary after:border-x-transparent after:border-t-transparent dark:after:border-b-white'>
-            Profile
-          </span> */}
         </button>
         <div
           aria-hidden={showUserDropdown}
           className={`grid transition-all absolute justify-center -translate-x-1/2 left-1/2 w-full bg-secondaryBg top-16 md:w-48 md:top-11 rounded-b-xl ${
-            showUserDropdown ? 'grid-rows-[1fr] p-5' : 'grid-rows-[0fr]'
+            showUserDropdown
+              ? 'grid-rows-[1fr] p-5  md:border md:border-primaryText'
+              : 'grid-rows-[0fr]'
           }`}>
-          <div className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'>
-            <Link href={'#'}>Dashboard</Link>
+          <div
+            className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'
+            onClick={() => setShowUserDropdown(false)}>
+            <Link href={`/dashboard/${session.data?.user?.id}`}>Dashboard</Link>
+            {/* <Link href={`/dashboard/${session.data?.user?.id}`}>Profile</Link> */}
             <Link href={'#'}> My Pets</Link>
-            <Link href={'#'}>
-              {' '}
-              <button className='btn w-[70vw] md:w-32'>Login</button>
-            </Link>
+            {session.status !== 'authenticated' ? (
+              <Link href={'/auth/login'}>
+                {' '}
+                <button className='btn w-[70vw] md:w-32'>Login</button>
+              </Link>
+            ) : (
+              <button
+                className='btn w-[70vw] md:w-32'
+                onClick={() => signOut()}>
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -165,16 +166,13 @@ const NavBar = () => {
         aria-label='Show navigation menus'
         onClick={() => {
           setHam(!ham);
-          SetShowUserDropdown(false);
+          setShowUserDropdown(false);
         }}>
         <span
           className={`relative h-[2px] block w-5 bg-primaryText before:absolute before:top-[-6px] before:left-0 before:h-[2px] before:w-full before:bg-primaryText before:content-[""] before:transition-transform after:absolute after:top-[6px] after:left-0 after:h-[2px] after:w-full after:bg-primaryText after:content-[""] after:transition-transform  ${
             ham &&
             'before:-rotate-45 after:rotate-45 before:-translate-x-[5px] before:translate-y-[1px] before:transition-transform after:-translate-x-[5px] after:-translate-y-[1px] after:scale-x-75 before:scale-x-75 after:transition-transform'
           }`}></span>
-        {/* <span className='hidden group-focus:block group-hover:block bg-secondary text-white rounded-[4px] py-[1px] px-[3px] text-xs text-center z-50 absolute top-[110%] left-0 dark:bg-white dark:text-black after:content-[""] after:absolute after:bottom-full after:left-[40%] after:-ml[5px] after:border-[5px] after:border-solid after:border-b-secondary after:border-x-transparent after:border-t-transparent dark:after:border-b-white'>
-          Menu
-        </span> */}
       </button>
     </header>
   );

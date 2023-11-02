@@ -1,5 +1,4 @@
 import Hero from '@/components/Hero';
-import PetsFilter from '@/components/PetsFilter';
 import HomePetsCard from '@/components/petsCard.tsx/HomePetsCard';
 
 export default function Home() {
@@ -8,7 +7,7 @@ export default function Home() {
       <Hero />
       {/* <h2>Available Pets Looking for Mates</h2> */}
       <div className='flex flex-col md:flex-row gap-6 px-3 md:px-14 lg:px-32'>
-        <PetsFilter />
+        {/* <PetsFilter /> */}
         <HomePetsCard />
       </div>
     </main>

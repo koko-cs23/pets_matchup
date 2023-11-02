@@ -27,7 +27,7 @@ export function HeaderAndTextAccordions({
           fill='none'>
           <path
             d='M1.33329 13.1899L13 1.52328L24.6666 13.1899'
-            stroke='black'
+            stroke='currentColor'
             strokeWidth='2'
             strokeLinecap='round'
             strokeLinejoin='round'

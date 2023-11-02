@@ -1196,3 +1196,26 @@ export const cat = [
     ]
   }
 ];
+
+export const agesArr = [
+  '7 - 12 months',
+  '1 - 2 years',
+  '2 - 3 years',
+  '3 - 4 years',
+  '4 - 5 years',
+  '5 - 6 years',
+  '6 - 7 years',
+  '7 - 8 years',
+  '8 - 9 years',
+  '9 - 10 years',
+  '10 - 11 years',
+  '11- 12 years',
+  '12 - 13 years',
+  '13 - 14 years',
+  '14 - 15 years',
+  '15 - 16 years',
+  '16 - 17 years',
+  '17 - 18 years',
+  '18 - 19 years',
+  '19 - 20 years'
+];

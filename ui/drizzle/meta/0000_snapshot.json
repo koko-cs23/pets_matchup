@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "535c38f5-c00a-49ea-87fd-3e32a4404e72",
+  "id": "47c74475-75ce-4cad-a482-e3156a09343c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -102,7 +102,7 @@
       "columns": {
         "name": {
           "name": "name",
-          "type": "varchar(20)",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         }
@@ -123,8 +123,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "pet-name": {
-          "name": "pet-name",
+        "pet_name": {
+          "name": "pet_name",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true
@@ -147,15 +147,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "pure-bred": {
-          "name": "pure-bred",
+        "pure_bred": {
+          "name": "pure_bred",
           "type": "varchar(30)",
           "primaryKey": false,
           "notNull": true
         },
         "age": {
           "name": "age",
-          "type": "integer",
+          "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true
         },
@@ -195,13 +195,13 @@
           "name": "user_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "category": {
           "name": "category",
-          "type": "varchar(20)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "city": {
           "name": "city",
@@ -212,6 +212,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "pet_user_id_user_id_fk": {
+          "name": "pet_user_id_user_id_fk",
+          "tableFrom": "pet",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "pet_category_category_name_fk": {
           "name": "pet_category_category_name_fk",
           "tableFrom": "pet",

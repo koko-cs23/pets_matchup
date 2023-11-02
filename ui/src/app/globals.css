@@ -45,7 +45,7 @@
 
 @layer components {
   .btn {
-    @apply m-auto flex items-center bg-ctaColor gap-1 py-2 px-5 rounded-lg shadow-md text-white justify-center disabled:bg-slate-400 dark:disabled:bg-slate-800 disabled:text-primaryBg;
+    @apply m-auto flex items-center bg-ctaColor gap-1 py-2 px-5 rounded-lg shadow-md text-white justify-center hover:scale-105 disabled:bg-slate-400 dark:disabled:bg-slate-800 disabled:text-primaryBg;
   }
   /* .line-input { @apply w-full focus-visible:outline-0 border-b-2 border-gray-400 focus-visible:border-b-[1px] focus-visible:border-solid focus-visible:border-goldColor bg-transparent} */
   .line-input {

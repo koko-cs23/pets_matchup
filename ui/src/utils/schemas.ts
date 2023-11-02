@@ -112,41 +112,75 @@ export const AddPetSchema = z.object({
     .string()
     .min(2, { message: 'Select the gender' })
     .max(30, { message: 'Too long!' }),
-  //   state: z
-  //     .string()
-  //     .min(2, { message: 'Select the state' })
-  //     .max(15, { message: 'Too long' }),
   city: z
     .string()
     .min(2, { message: 'Select the city' })
     .max(20, { message: 'Too long' }),
-  // imgs: z
-  //   .object({
-  //     value: z
-  //       .custom<File>()
-  //       .refine((file) => !!file?.[0], 'Img field cannot be empty')
-  //       .refine(
-  //         (file) => file?.[0]?.size <= MAX_FILE_SIZE,
-  //         'Max image size is 5MB.'
-  //       )
-  //   })
-  //   .array(),
   imgs: z
     .any()
+    .refine((files) => !!files?.value?.[0], 'Img field cannot be empty')
     .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      (files) => files?.value?.[0]?.size <= MAX_FILE_SIZE,
       'Max image size is 5MB.'
     )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported'
-    )
+    // .refine((files) => {
+    //   console.log({ refine: files });
+    //   ACCEPTED_IMAGE_TYPES.includes(files?.value?.[0]?.type),
+    //     `${files?.value?.[0]?.type} is not allowed`;
+    //   // 'Only .jpg, .jpeg, .png and .webp formats are supported';
+    // })
     .array(),
   description: z
     .string()
     .min(10, { message: 'Too short' })
     .max(200, { message: 'Too long' })
 });
+
+export const PetSchema = z.object({
+  category: z.enum(['Cat', 'Dog']),
+  id: z.string().optional(),
+  petName: z
+    .string()
+    .min(2, { message: 'Too short!' })
+    .max(30, { message: 'Too long' }),
+  country: z
+    .string()
+    .min(3, { message: 'Select the country' })
+    .max(20, { message: 'Invalid input' }),
+  state: z
+    .string()
+    .min(3, { message: 'Select the state' })
+    .max(36, { message: 'Invalid input' }),
+  breed: z
+    .string()
+    .min(2, { message: 'Select the breed' })
+    .max(30, { message: 'Too long' }),
+  purebred: z
+    .string()
+    .min(2, { message: 'Select Yes or No' })
+    .max(4, { message: 'Too long!' }),
+  age: z
+    .string()
+    .min(2, { message: 'Select the age' })
+    .max(30, { message: 'Too long!' }),
+  gender: z
+    .string()
+    .min(2, { message: 'Select the gender' })
+    .max(30, { message: 'Too long!' }),
+  city: z
+    .string()
+    .min(2, { message: 'Select the city' })
+    .max(20, { message: 'Too long' }),
+  imgs: z.string().array(),
+  description: z
+    .string()
+    .min(10, { message: 'Too short' })
+    .max(200, { message: 'Too long' }),
+  userEmail: z.string(),
+  userId: z.string().optional(),
+  updatedAt: z.string().optional()
+});
+
 export const FilterPetSchema = z.object({
   //   category: z.enum(['cats', 'dogs']),
   category: z.coerce.number().max(2).optional(),
@@ -167,4 +201,5 @@ export type LoginSchemaType = z.infer<typeof LoginSchema>;
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 export type RegisterSchemaApiType = z.infer<typeof RegisterSchemaApi>;
 export type AddPetSchemaType = z.infer<typeof AddPetSchema>;
+export type PetSchemaType = z.infer<typeof PetSchema>;
 export type FilterPetSchemaType = z.infer<typeof FilterPetSchema>;

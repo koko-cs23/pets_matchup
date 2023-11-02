@@ -3,9 +3,6 @@ import CryptoJS from 'crypto-js';
 import { db } from '@/db/db';
 import { RegisterSchemaApi } from '@/utils/schemas';
 import { users } from '@/db/schema/schema';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 
 export const POST = async (request: Request) => {
   // validate the data
@@ -14,7 +11,7 @@ export const POST = async (request: Request) => {
   );
   try {
     // Hash the password with cryptoJS and create a new User
-    const register = await db.insert(users).values({
+    await db.insert(users).values({
       passwordHash: CryptoJS.AES.encrypt(
         password,
         process.env.PASSWORD_SECRET!

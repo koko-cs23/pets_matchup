@@ -39,6 +39,9 @@ const Footer = () => {
             <Link href={'/faqs'}>
               <p>FAQ</p>
             </Link>
+            <Link href={'/privacy-policy'}>
+              <p>Privacy Policy</p>
+            </Link>
           </div>
         </span>
         <span className='py-2'>

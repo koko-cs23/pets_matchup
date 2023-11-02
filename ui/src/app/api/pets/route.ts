@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
-import { AddPetSchema } from '@/utils/schemas';
+import { PetSchema } from '@/utils/schemas';
 import { db } from '@/db/db';
+import { pets, users, categories } from '@/db/schema/schema';
+import { eq } from 'drizzle-orm';
 
 export const GET = async () => {
   try {
-    const allPets = await db.query.pets.findMany();
+    const allPets = await db.query.pets.findMany({ limit: 60 });
     if (!allPets)
       return new NextResponse(JSON.stringify({ message: 'No pet found' }), {
         status: 400
@@ -33,41 +35,75 @@ export const POST = async (request: Request, res: Response) => {
     imgs,
     petName,
     purebred,
-    state
-  } = AddPetSchema.parse(await request.json);
+    state,
+    userEmail
+  } = PetSchema.parse(await request.json());
+  console.log('passed val');
   try {
-    let images = [];
-
-    for (let i = 0; i < imgs.length; i++) {
-      // console.log({ path: req.files[i].path });
-      const result = await cloudinary.uploader.upload(req.files[i].path, {
-        upload_preset: 'ecomm'
-      });
-      await unlinkAsync(req.files[i].path);
-      images.push(result.secure_url);
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, userEmail));
+    if (!user) {
+      return new NextResponse(
+        JSON.stringify({ message: 'Invalid user credential' }),
+        {
+          status: 401
+        }
+      );
     }
-
-    let [product] = await db
-      .insert(products)
+    console.log(user.id);
+    let [pet] = await db
+      .insert(pets)
       .values({
-        phone,
+        age,
+        breed,
         city,
-        category,
+        country,
+        description,
+        gender,
+        imgs,
+        petName,
+        purebred,
         state,
-        subCategory,
-        negotiable,
-        userId,
-        price: +price,
-        specifications: dynamic,
-        description: desc,
-        cloudinary_ids: images
+        category,
+        userId: user.id
       })
       .returning();
-    if (products) {
-      return res.status(201).json({ message: product });
+    if (pet) {
+      return new NextResponse(JSON.stringify({ pet }), {
+        status: 201
+      });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error });
+    return new NextResponse(
+      JSON.stringify({ error, message: 'Something went wrong' }),
+      {
+        status: 500
+      }
+    );
+  }
+};
+
+// Not releveant. Just for creating the categories beforehand.
+export const PUT = async (request: Request, res: Response) => {
+  console.log('passed val');
+  try {
+    let [cat] = await db.insert(categories).values({ name: 'Cat' }).returning();
+    let [dog] = await db.insert(categories).values({ name: 'Dog' }).returning();
+    if (cat) {
+      return new NextResponse(JSON.stringify({ cat, dog }), {
+        status: 201
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return new NextResponse(
+      JSON.stringify({ error, message: 'Something went wrong' }),
+      {
+        status: 500
+      }
+    );
   }
 };

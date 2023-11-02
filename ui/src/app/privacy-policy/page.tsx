@@ -11,8 +11,8 @@ const TandC = () => {
       <i className='mx-3 md:mx-16 lg:mx-32 text-sm opacity-70'>19/10/2023</i>
       <div className='flex gap-2 flex-col text-justify my-8 mx-3 md:mx-16 lg:mx-32'>
         <p className='first-letter:uppercase first-letter:text-7xl first-letter:font-bold first-line:tracking-widest first-letter:text-ctaColor first-letter:mr-3 first-letter:float-left first-letter:leading-[4rem] mb-6'>
-          At [Your Website Name], we are committed to protecting your privacy
-          and ensuring the security of your personal information. This Privacy
+          At PetsMatchup, we are committed to protecting your privacy and
+          ensuring the security of your personal information. This Privacy
           Policy outlines our practices and policies regarding the collection,
           use, and sharing of your information when you use our website or
           services to help individuals find mates for their pets. By accessing
@@ -119,7 +119,7 @@ const TandC = () => {
           <li>
             <h5 className='font-semibold inline'>With Other Users:</h5>
             <p className='inline ml-2'>
-              Your information, such as your pet's details and your
+              Your information, such as your pet&apos;s details and your
               communication history, may be shared with other users interested
               in mating their pets with yours.
             </p>
@@ -171,7 +171,7 @@ const TandC = () => {
           cannot guarantee absolute security.
         </p>
         <h3 className='text-lg font-semibold text-ctaColor'>
-          Children's Privacy
+          Children&apos;s Privacy
         </h3>
         <p>
           Our services are not intended for users under the age of 18, and we do
@@ -202,8 +202,8 @@ const TandC = () => {
         </p>
 
         <i>
-          Thank you for using [Your Website Name] to help find mates for your
-          beloved pets!
+          Thank you for using PetsMatchup to help find mates for your beloved
+          pets!
         </i>
       </div>
     </main>

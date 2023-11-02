@@ -1,12 +1,10 @@
 'use client';
 
-import React, { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ImSpinner, ImUser } from 'react-icons/im';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { places, cat } from '@/utils/jsons';
 import { FilterPetSchema, FilterPetSchemaType } from '../utils/schemas';
-import { apiAddress } from '../utils/variables';
 import { SelectInput } from '@/components/helpers/InputFields';
 
 function PetsFilter() {

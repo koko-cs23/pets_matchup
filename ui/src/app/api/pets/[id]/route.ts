@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db/db';
-import { eq } from 'drizzle-orm';
-import { pets } from '@/db/schema/schema';
 
-export const GET = async (request: Request) => {
-  const req = await request.json();
+export const GET = async (
+  request: Request,
+  { params }: { params: { id: string } }
+) => {
   try {
-    const [pet] = await db
-      .select()
-      .from(pets)
-      .where(eq(pets.id, req.params.id));
+    // const [pet] = await db.select().from(pets).where(eq(pets.id, params.id))
+    const pet = await db.query.pets.findFirst({
+      where: (pets, { eq }) => eq(pets.id, params.id)
+    });
     if (!pet)
       new NextResponse(JSON.stringify({ message: 'User not found' }), {
         status: 400

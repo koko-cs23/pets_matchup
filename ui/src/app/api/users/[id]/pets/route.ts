@@ -8,7 +8,11 @@ export const GET = async (
   { params }: { params: { id: string } }
 ) => {
   try {
-    const [user] = await db.select().from(users).where(eq(users.id, params.id));
+    // const [user] = await db.select().from(users).where(eq(users.id, params.id));
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, params.id),
+      with: { pets: true }
+    });
     if (!user) {
       return new NextResponse(
         JSON.stringify({ message: 'Invalid user credential' }),

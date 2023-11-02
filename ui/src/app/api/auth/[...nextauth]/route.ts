@@ -2,10 +2,8 @@ import NextAuth from 'next-auth';
 import CryptoJS from 'crypto-js';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import FacebookProvider from 'next-auth/providers/facebook';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db/db';
-import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { users } from '@/db/schema/schema';
 
@@ -81,7 +79,22 @@ const handler = NextAuth({
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60 // 30 days
   },
-  debug: process.env.NODE_ENV === 'development'
+  debug: process.env.NODE_ENV === 'development',
+  callbacks: {
+    // jwt({ token, account, user }) {
+    //   if (account) {
+    //     token.accessToken = account.access_token;
+    //     token.id = user?.id;
+    //   }
+    //   return token;
+    // }
+    session: ({ session, token }) => ({
+      ...session,
+      user: { ...session.user, id: token.sub }
+      // session.user.id = token.id;
+      // return session;
+    })
+  }
 });
 
 export { handler as GET, handler as POST };

@@ -85,12 +85,12 @@ export type NewUser = InferInsertModel<typeof users>;
 
 export const pets = pgTable('pet', {
   id: uuid('id').primaryKey().defaultRandom(),
-  petName: varchar('pet-name', { length: 20 }).notNull(),
+  petName: varchar('pet_name', { length: 20 }).notNull(),
   country: varchar('country', { length: 20 }).notNull(),
   state: varchar('state', { length: 20 }).notNull(),
   breed: varchar('breed', { length: 30 }).notNull(),
-  pureBred: varchar('pure-bred', { length: 30 }).notNull(),
-  age: integer('age').notNull(),
+  purebred: varchar('pure_bred', { length: 30 }).notNull(),
+  age: varchar('age', { length: 20 }).notNull(),
   gender: varchar('gender', { length: 7 }).notNull(),
   description: text('description').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -99,17 +99,19 @@ export const pets = pgTable('pet', {
     .array()
     .notNull()
     .$type<Array<string>>(), // array
-  userId: text('user_id'),
-  category: varchar('category', { length: 20 }).references(
-    () => categories.name
-  ),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  category: text('category')
+    .notNull()
+    .references(() => categories.name),
   city: varchar('city', { length: 20 }).notNull()
 });
 
 export const petsRelations = relations(pets, ({ one }) => ({
   user: one(users, {
     fields: [pets.userId],
-    references: [users.id]
+    references: [users.email]
   }),
   pets: one(categories, {
     fields: [pets.category],
@@ -121,7 +123,7 @@ export type Pet = InferSelectModel<typeof pets>;
 export type NewPet = InferInsertModel<typeof pets>;
 
 export const categories = pgTable('category', {
-  name: varchar('name', { length: 20 }).primaryKey()
+  name: text('name').primaryKey()
 });
 
 export const categoriesRelations = relations(categories, ({ many }) => ({

@@ -1,20 +1,22 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { places, cat } from '@/utils/jsons';
+import { places, cat, agesArr } from '@/utils/jsons';
 import { AddPetSchema, AddPetSchemaType } from '../../../utils/schemas';
 import {
   SelectInput,
   DescriptionInput,
   DefaultInput
 } from '@/components/helpers/InputFields';
-import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 const AddPets = () => {
-  const [imgSubmitting, setImgSubmitting] = useState(false);
-  const [imgsUrl, setImgsUrl] = useState([]);
+  const router = useRouter();
+  const auth = useSession();
+
   const {
     register,
     handleSubmit,
@@ -39,9 +41,7 @@ const AddPets = () => {
   });
 
   const fields = watch();
-  console.log(fields);
-
-  console.log(errors);
+  // console.log(fields);
 
   let place: string[] = [];
   if (places?.[fields.state]?.cities) {
@@ -71,37 +71,66 @@ const AddPets = () => {
     control
   });
 
-  // const submitImg = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   setImgSubmitting(true);
-  //   const formData = new FormData();
-  //   // const images = [img1, img2];
-  //   // for (let i = 0; i < images.length; i++) {
-  //   // 	formData.append("images[]", images[i]);
-  //   // }
-  //   formData.append('file', img1);
-  //   formData.append('upload_preset', 'u16vszak');
-  //   formData.append('cloud_name', 'dyez5iyvm');
-  //   const identityVerification = await fetch(
-  //     `https://api.cloudinary.com/v1_1/dyez5iyvm/image/upload`,
-  //     {
-  //       method: 'POST',
-  //       body: formData
-  //     }
-  //   );
-  //   formData.append('file', img2);
-  //   formData.append('upload_preset', 'u16vszak');
-  //   formData.append('cloud_name', 'dyez5iyvm');
-  //   const addressVerification = await fetch(
-  //     `https://api.cloudinary.com/v1_1/dyez5iyvm/image/upload`,
-  //     {
-  //       method: 'POST',
-  //       body: formData
-  //     }
-  //   );
-  // };
-
-  const submit = async (data: AddPetSchemaType) => {};
+  const submit = async ({
+    age,
+    breed,
+    category,
+    city,
+    country,
+    description,
+    gender,
+    imgs,
+    petName,
+    purebred,
+    state
+  }: AddPetSchemaType) => {
+    const imgObjects = await Promise.all(
+      imgs.map(async (v) => {
+        const formInput = new FormData();
+        formInput.append('file', v.value[0]);
+        formInput.append('upload_preset', 'pets_matchup');
+        const res = fetch(
+          'https://api.cloudinary.com/v1_1/naijason/image/upload',
+          {
+            method: 'POST',
+            body: formInput
+          }
+        );
+        return (await res).json();
+      })
+    );
+    console.log({ imgobj: imgObjects });
+    const imgUrls = imgObjects.map((a) => a.secure_url);
+    console.log({ imgUrls: imgUrls });
+    const res = await fetch(`/api/pets`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // send the userID
+      body: JSON.stringify({
+        age,
+        breed,
+        category: cat[category].name,
+        city,
+        country,
+        description,
+        gender,
+        imgs: imgUrls,
+        petName,
+        purebred,
+        state: places[state].name,
+        userEmail: auth.data?.user?.email
+      })
+    });
+    const response = await res.json();
+    console.log(response);
+    if (res.ok) {
+      router.push('/?alert=Pet uploaded successfully');
+    } else {
+      alert('Something went wrong');
+    }
+  };
 
   return (
     <main>
@@ -147,7 +176,7 @@ const AddPets = () => {
           register={register('purebred')}
         />
         <SelectInput
-          items={['Yes', 'No']}
+          items={agesArr}
           errors={errors.age?.message}
           fields={fields?.age?.length > 0}
           placeholder='age'

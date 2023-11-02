@@ -42,8 +42,10 @@ const Dropdown = ({
       <div
         aria-hidden={dropdown}
         id={value}
-        className={`grid transition-all relative md:absolute md:justify-center -translate-x-1/2 left-1/2 bg-secondaryBg md:top-11 rounded-b-xl ${
-          dropdown ? 'grid-rows-[1fr] pt-2 md:py-5 px-10' : 'grid-rows-[0fr]'
+        className={`grid transition-all relative md:absolute md:justify-center -translate-x-1/2 left-1/2 bg-secondaryBg md:top-10 md:w-36 rounded-b-xl ${
+          dropdown
+            ? 'grid-rows-[1fr] pt-2 md:py-5 px-10  md:border md:border-primaryText'
+            : 'grid-rows-[0fr]'
         }`}>
         <div className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'>
           {content.map((item: string, i: number) => (

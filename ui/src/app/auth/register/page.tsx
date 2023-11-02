@@ -54,7 +54,7 @@ const Register = () => {
     });
     const data = await res.json();
     if (res.ok) {
-      router.push('/login?alert=Registration successful');
+      router.push('/auth/login?alert=Registration successful');
     } else if (data.message == 'A user with this email already exists') {
       setError('email', {
         type: 'server',
