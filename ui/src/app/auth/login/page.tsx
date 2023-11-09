@@ -1,26 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { ImSpinner } from 'react-icons/im';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AiOutlineMail } from 'react-icons/ai';
 import { BiShow, BiHide } from 'react-icons/bi';
 import { signIn } from 'next-auth/react';
 import { LoginSchema, LoginSchemaType } from '../../../utils/schemas';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Login = () => {
-  //   const { user, authChecking }: any = useContext(AuthContext);
-
   const router = useRouter();
   const [showPassword, setShowPassWord] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl =
+    searchParams.get('callbackUrl') || '/?alert=Log in successful';
+  const alert = searchParams.get('alert');
 
-  //   useEffect(() => {
-  //     // TODO: Display "You are already logged in"
-  //     user && router.push('/');
-  //   }, [user]);
+  useEffect(() => {
+    if (alert) {
+      toast.error(alert);
+    }
+  }, []);
 
   const {
     register,
@@ -32,52 +36,30 @@ const Login = () => {
     resolver: zodResolver(LoginSchema)
   });
 
-  console.log(errors);
-
-  // const signIn = async ({ email, password }: LoginSchemaType) => {
-  // const res = await fetch(`${apiAddress}/auth/register`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify({
-  //     email,
-  //     password
-  //   })
-  // });
-  // const data = await res.json();
-  // if (res.ok) {
-  //   router.push('/login');
-  // } else if (data.message == 'This email address is already taken') {
-  //   setError('email', {
-  //     type: 'server',
-  //     message: data.message
-  //   });
-  // } else {
-  //   alert(data?.message);
-  // }
-  // signIn("credentials", {{email, password}, redirect: false})
-  // };
-
   const logIn = async ({ email, password }: LoginSchemaType) => {
+    // const loadingToast = toast.loading('Submitting');
     await signIn('credentials', { redirect: false, email, password })
       .then((res) => {
         if (res?.ok) {
-          router.push('/?alert=Log in successful');
+          router.push(callbackUrl);
+          router.refresh();
         } else {
-          alert('invalid login details');
+          // toast.dismiss(loadingToast);
+          toast.error('invalid login details');
         }
       })
       .catch((error) => console.log(error));
   };
 
   return (
-    <main className='min-h-[75vh] rounded-lg shadow-md text-center pb-12 mt-28 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
+    <main className='min-h-[calc(100vh-30rem)] md:min-h-[calc(100vh-15rem)]min-h-[75vh] rounded-lg shadow-md text-center pb-12 mt-28 my-8 px-3 m-3 flex items-center dark:bg-secondaryBg md:mx-14 md:px-16 lg:mx-32'>
       <div className='flex gap-11 flex-col w-full m-auto max-w-sm'>
         <h2 className='text-secondary text-3xl mt-4 font-medium'>
           Sign in to PetMatchup
         </h2>
-        <button className='flex gap-4 px-5 py-2 border rounded-xl w-max m-auto items-center'>
+        <button
+          className='flex gap-4 px-5 py-2 border rounded-xl w-max m-auto items-center'
+          onClick={() => signIn('github')}>
           <svg
             stroke='currentColor'
             fill='currentColor'
@@ -93,9 +75,9 @@ const Login = () => {
           <p>Log in with Github</p>
         </button>
         <div className='flex w-full justify-center items-center'>
-          <div className='h-[1px] mx-3 flex-1 grd'></div>
+          <div className='h-[1px] mx-3 flex-1 grdLine'></div>
           <p>OR</p>
-          <div className='h-[1px] mx-3 flex-1 rotate-180 grd'></div>
+          <div className='h-[1px] mx-3 flex-1 rotate-180 grdLine'></div>
         </div>
         <form
           onSubmit={handleSubmit(logIn)}
@@ -140,7 +122,7 @@ const Login = () => {
               }`}>
               <ImSpinner />
             </span>
-            <p className={`${isSubmitting && 'opacity-40'}`}>Sign Up</p>
+            <p className={`${isSubmitting && 'opacity-40'}`}>Log In</p>
           </button>
         </form>
         <p className='text-sm'>
@@ -148,10 +130,11 @@ const Login = () => {
           <Link
             href='/auth/register'
             className='text-secondary ml-2 px-2 rounded-md border'>
-            Sign Up
+            Sign up
           </Link>
         </p>
       </div>
+      <Toaster />
     </main>
   );
 };

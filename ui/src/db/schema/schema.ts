@@ -23,12 +23,12 @@ export const users = pgTable('user', {
   name: varchar('name', { length: 120 }).notNull(),
   passwordHash: varchar('password_hash', { length: 120 }),
   email: varchar('email', { length: 120 }).notNull().unique(),
-  emailVerified: timestamp('email_verified', { mode: 'date' }),
+  emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
   role: text('role', { enum: ['admin', 'user', 'moderator'] })
     .default('user')
     .notNull(),
-  phone: varchar('phone', { length: 20 }).notNull().unique(),
+  phone: varchar('phone', { length: 20 }).unique(),
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
@@ -43,8 +43,8 @@ export const accounts = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     type: text('type').$type<AdapterAccount['type']>().notNull(),
-    provider: text('type').notNull(),
-    providerAccountId: text('provider_account_id').notNull(),
+    provider: text('provider').notNull(),
+    providerAccountId: text('providerAccountId').notNull(),
     refresh_token: text('refresh_token'),
     access_token: text('access_token'),
     expires_at: integer('expires_at'),
@@ -111,7 +111,7 @@ export const pets = pgTable('pet', {
 export const petsRelations = relations(pets, ({ one }) => ({
   user: one(users, {
     fields: [pets.userId],
-    references: [users.email]
+    references: [users.id]
   }),
   pets: one(categories, {
     fields: [pets.category],

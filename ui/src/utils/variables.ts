@@ -1,2 +1,5 @@
-export const apiAddress = 'http://localhost:3000/api/';
-// export const apiAddress = 'http://web-02.naijason.tech:4000';
+// export const apiAddress = 'http://localhost:3000/';
+export const apiAddress =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : 'https://petsmatchup.vercel.app';

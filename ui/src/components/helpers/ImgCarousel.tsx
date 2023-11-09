@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Modal from '@/components/helpers/Modal';
 
-export const ImgCarousel = ({ imgs }: { imgs: string[] }) => {
+export const ImgCarousel = ({ imgs, alt }: { imgs: string[]; alt: string }) => {
   const [imgIndex, setImgIndex] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [docImg, setDocImg] = useState('');
@@ -39,7 +39,7 @@ export const ImgCarousel = ({ imgs }: { imgs: string[] }) => {
               style={{ translate: `${-100 * imgIndex}%` }}>
               <Image
                 key={i}
-                alt=''
+                alt={`${alt} ${imgIndex + 1}`}
                 src={imgs[i]}
                 aria-hidden={imgIndex !== i}
                 // fill
@@ -78,10 +78,10 @@ export const ImgCarousel = ({ imgs }: { imgs: string[] }) => {
         {imgs.map((v, i) => (
           <div
             onClick={() => setImgIndex(i)}
-            className='relative w-full cursor-pointer md:pr-4 '
+            className='relative cursor-pointer md:pr-4 '
             key={i}>
             <Image
-              alt=''
+              alt={`view image ${i + 1}`}
               src={v}
               width={80}
               height={65}

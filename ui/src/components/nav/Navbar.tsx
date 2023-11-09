@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Dropdown from './DropDown';
 import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const NavBar = () => {
   const [ham, setHam] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [query, setQuery] = useState('');
   const session: any = useSession();
-
-  console.log(session);
+  const router = useRouter();
 
   return (
     <header
@@ -81,7 +82,7 @@ const NavBar = () => {
         }`}>
         <Dropdown
           value={'Categories'}
-          content={['Dogs', 'Cats']}
+          content={['Dog', 'Cat']}
           tab={+ham - 1}
         />
         <hr className='dark:opacity-30' />
@@ -93,13 +94,36 @@ const NavBar = () => {
           <p className='table px-3 w-full cursor-pointer'>Blog</p>
         </Link>
         <hr className='dark:opacity-30' />
-        <search className='px-3'>
+        <search className='px-3 relative'>
           <input
             type='search'
             placeholder='Search'
             id='search'
-            className='rounded-lg md:w-32 w-full py-2 px-5 border border-ctaColor focus-within:w-full'
+            className='rounded-lg md:w-32 w-full py-2 px-5 border border-ctaColor focus-within:w-full text-black peer'
+            value={query}
+            onKeyDown={(e) => {
+              e.key === 'Enter' && router.push(`/pet?q=${query}`);
+            }}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
           />
+          <svg
+            width='24'
+            height='24'
+            viewBox='0 0 27 26'
+            fill='none'
+            className='absolute right-5 bottom-[6px] text-slate-600 peer-focus-within:hidden'
+            xmlns='http://www.w3.org/2000/svg'>
+            <path
+              d='M8.33324 18.1667L12.052 14.4479M12.052 14.4479C12.4107 14.8126 12.838 15.1027 13.3094 15.3014C13.7808 15.5001 14.2868 15.6035 14.7983 15.6056C15.3098 15.6078 15.8167 15.5086 16.2897 15.3139C16.7628 15.1191 17.1925 14.8327 17.5543 14.471C17.916 14.1093 18.2026 13.6796 18.3974 13.2067C18.5923 12.7337 18.6916 12.2268 18.6895 11.7153C18.6875 11.2038 18.5842 10.6977 18.3857 10.2263C18.1871 9.7549 17.8971 9.32747 17.5325 8.96868C16.8039 8.25166 15.8215 7.8516 14.7992 7.85564C13.777 7.85968 12.7977 8.2675 12.0748 8.99025C11.3519 9.71301 10.9439 10.6922 10.9396 11.7144C10.9353 12.7366 11.3351 13.7192 12.052 14.4479ZM25.125 13C25.125 14.5266 24.8243 16.0383 24.2401 17.4487C23.6559 18.8591 22.7996 20.1406 21.7201 21.2201C20.6406 22.2996 19.3591 23.1559 17.9486 23.7401C16.5382 24.3243 15.0265 24.625 13.4999 24.625C11.9733 24.625 10.4616 24.3243 9.05121 23.7401C7.6408 23.1559 6.35926 22.2996 5.27977 21.2201C4.20029 20.1406 3.34399 18.8591 2.75978 17.4487C2.17557 16.0383 1.87488 14.5266 1.87488 13C1.87488 9.91683 3.09966 6.95996 5.27977 4.77984C7.45989 2.59972 10.4168 1.37494 13.4999 1.37494C16.5831 1.37494 19.54 2.59972 21.7201 4.77984C23.9002 6.95996 25.125 9.91683 25.125 13Z'
+              stroke='currentColor'
+              strokeOpacity='0.8'
+              strokeWidth='2.58334'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
+          </svg>
         </search>
       </nav>
 
@@ -136,11 +160,14 @@ const NavBar = () => {
               : 'grid-rows-[0fr]'
           }`}>
           <div
-            className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'
+            className='max-h-full overflow-hidden items-center w-max flex flex-col gap-3'
             onClick={() => setShowUserDropdown(false)}>
             <Link href={`/dashboard/${session.data?.user?.id}`}>Dashboard</Link>
             {/* <Link href={`/dashboard/${session.data?.user?.id}`}>Profile</Link> */}
             <Link href={'#'}> My Pets</Link>
+            {/* {session.status === 'authenticated' && ( */}
+            <Link href={'/pet/new-pet'}> Upload a Pet</Link>
+            {/* )} */}
             {session.status !== 'authenticated' ? (
               <Link href={'/auth/login'}>
                 {' '}

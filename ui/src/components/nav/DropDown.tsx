@@ -49,7 +49,7 @@ const Dropdown = ({
         }`}>
         <div className='max-h-full overflow-hidden items-center w-max flex flex-col gap-2'>
           {content.map((item: string, i: number) => (
-            <Link href={item} tabIndex={+dropdown - 1} key={i}>
+            <Link href={`/pet?q=${item}`} tabIndex={+dropdown - 1} key={i}>
               {item}
             </Link>
           ))}

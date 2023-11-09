@@ -35,7 +35,6 @@ export const GET = async (
 //     ).toString();
 //   }
 //   const { ...all } = req.body;
-//   console.log(all);
 //   try {
 //     const [updatedUser] = await db
 //       .update(users)

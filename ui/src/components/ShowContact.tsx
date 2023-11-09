@@ -1,5 +1,6 @@
 'use client';
 
+import { apiAddress } from '@/utils/variables';
 import { useState } from 'react';
 
 export default function ShowContact({ userId }: { userId: string }) {
@@ -8,7 +9,9 @@ export default function ShowContact({ userId }: { userId: string }) {
 
   const fetchContact = async () => {
     setShowContact('loading...');
-    const res = await fetch(`/api/phone/${userId}`, { method: 'POST' });
+    const res = await fetch(`${apiAddress}/api/phone/${userId}`, {
+      method: 'POST'
+    });
     if (res.ok) {
       const contact = await res.json();
       setShowContact(contact.phone);

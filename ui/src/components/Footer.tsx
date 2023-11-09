@@ -14,9 +14,6 @@ const Footer = () => {
               <p>Countries</p>
             </Link>
             <Link href={'#'}>
-              <p>Dashboard</p>
-            </Link>
-            <Link href={'#'}>
               <p>Pets For Sale</p>
             </Link>
             <Link href={'#'}>

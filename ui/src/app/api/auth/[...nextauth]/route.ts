@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CryptoJS from 'crypto-js';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -7,7 +7,7 @@ import { db } from '@/db/db';
 import { eq } from 'drizzle-orm';
 import { users } from '@/db/schema/schema';
 
-const handler = NextAuth({
+const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
   providers: [
     GithubProvider({
@@ -21,15 +21,10 @@ const handler = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials, req) {
-        console.log('authorise');
-        console.log({ credentials: credentials });
-        console.log({ req: req });
-        if (!credentials?.email || !credentials.password) {
-          console.log('no credentials');
+        if (!credentials?.email || !credentials?.password) {
           return null;
         } else {
           try {
-            console.log('try block');
             const [user] = await db
               .select()
               .from(users)
@@ -60,7 +55,6 @@ const handler = NextAuth({
 
               return null;
             } else {
-              console.log('apt!');
               return user;
             }
           } catch (err) {
@@ -74,20 +68,25 @@ const handler = NextAuth({
       }
     })
   ],
-  secret: process.env.SECRET,
+  secret: 'process.env.NEXTAUTH_SECRET',
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60 // 30 days
   },
-  debug: process.env.NODE_ENV === 'development',
+  // debug: process.env.NODE_ENV === 'development',
+  debug: true,
+  pages: {
+    signIn: '/auth/login',
+    error: '/auth/login'
+  },
   callbacks: {
-    // jwt({ token, account, user }) {
-    //   if (account) {
-    //     token.accessToken = account.access_token;
-    //     token.id = user?.id;
-    //   }
-    //   return token;
-    // }
+    jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = user?.id;
+      }
+      return token;
+    },
     session: ({ session, token }) => ({
       ...session,
       user: { ...session.user, id: token.sub }
@@ -95,6 +94,8 @@ const handler = NextAuth({
       // return session;
     })
   }
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
